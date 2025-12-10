@@ -9,7 +9,7 @@ router.use('/menu-items', require('./menuItemRoutes'));
 router.use('/orders', require('./orderRoutes'));
 router.use('/order-items', require('./orderItemRoutes')); 
 router.use('/roles', require('./roleRoutes'));
-router.use('/subscriptions', require('./subscriptionRoutes'));
-router.use('/payments', require('./paymentRoutes'));
+// router.use('/subscriptions', require('./subscriptionRoutes'));
+// router.use('/payments', require('./paymentRoutes'));
 
 module.exports = router;
