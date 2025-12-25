@@ -1,20 +1,30 @@
 const express = require('express');
 const router = express.Router();
 const menuCategoryController = require('../controllers/menuCategoryController');
-const { authenticateToken } = require('../middleware/auth');
-// GET all categories
-router.get('/', authenticateToken, menuCategoryController.getAllMenuCategories);
+const { authenticateToken, authorizeRole } = require('../middleware/auth');
 
-// GET single category by ID
+router.get('/', authenticateToken, menuCategoryController.getAllMenuCategories);
 router.get('/:id', authenticateToken, menuCategoryController.getMenuCategoryById);
 
-// POST create new category
-router.post('/', authenticateToken, menuCategoryController.createMenuCategory);
+router.post(
+  '/',
+  authenticateToken,
+  authorizeRole(['owner', 'admin']),
+  menuCategoryController.createMenuCategory
+);
 
-// PUT update category
-router.put('/:id', authenticateToken, menuCategoryController.updateMenuCategory);
+router.put(
+  '/:id',
+  authenticateToken,
+  authorizeRole(['owner', 'admin']),
+  menuCategoryController.updateMenuCategory
+);
 
-// DELETE category
-router.delete('/:id', authenticateToken, menuCategoryController.deleteMenuCategory);
+router.delete(
+  '/:id',
+  authenticateToken,
+  authorizeRole(['owner', 'admin']),
+  menuCategoryController.deleteMenuCategory
+);
 
 module.exports = router;

@@ -7,49 +7,40 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
       unique: true,
-      validate: {
-        isEmail: true,
-      },
     },
     phone: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
       unique: true,
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    profileImage: {
-      type: DataTypes.STRING, // Can store a URL or local path
+    roleId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    verificationToken: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     isVerified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    verificationToken: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
   });
 
-  // Optional associations (if needed later)
   User.associate = (models) => {
-    User.belongsTo(models.Restaurant, {
-      foreignKey: 'restaurantId',
-      as: 'restaurant',
-    });
-    User.belongsTo(models.Role, {
-      foreignKey: 'roleId',
-      as: 'role'   // <-- Fix alias
-    });
+    User.belongsTo(models.Role, { foreignKey: 'roleId', as: 'role' });
+    User.hasMany(models.Restaurant, { foreignKey: 'user_id', as: 'restaurants' });
+    User.hasMany(models.Table, { foreignKey: 'userId' });
   };
 
   return User;

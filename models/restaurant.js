@@ -18,10 +18,38 @@ module.exports = (sequelize, DataTypes) => {
     address: {
       type: DataTypes.STRING,
     },
+    logo: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    user_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    gstPercent: {
+      type: DataTypes.DECIMAL(5, 2),
+      defaultValue: 5.00,
+    },
+    serviceChargePercent: {
+      type: DataTypes.DECIMAL(5, 2),
+      defaultValue: 0.00,
+    },
+    isGstEnabled: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+    isServiceChargeEnabled: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+    defaultDiscountPercent: {
+      type: DataTypes.DECIMAL(5, 2),
+      defaultValue: 0.00,
+    },
   });
 
   Restaurant.associate = (models) => {
-    Restaurant.hasMany(models.User, { foreignKey: 'restaurantId' });
+    Restaurant.belongsTo(models.User, { foreignKey: 'user_id', as: 'owner' });
     Restaurant.hasMany(models.Table, { foreignKey: 'restaurantId' });
     Restaurant.hasMany(models.MenuCategory, { foreignKey: 'restaurantId' });
   };

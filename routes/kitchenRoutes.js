@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const paymentController = require('../controllers/paymentController');
+const kitchenController = require('../controllers/kitchenController');
 const { authenticateToken } = require('../middleware/auth');
 
-router.post('/:orderId/pay', authenticateToken, paymentController.recordPayment);
+router.get('/', authenticateToken, kitchenController.getKitchenOrders);
 
 module.exports = router;

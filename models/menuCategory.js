@@ -6,7 +6,21 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    name: DataTypes.STRING,
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+  }, {
+    indexes: [
+      {
+        unique: true,
+        fields: ['name', 'restaurantId'], // 🔐 unique per restaurant
+      },
+    ],
   });
 
   MenuCategory.associate = (models) => {

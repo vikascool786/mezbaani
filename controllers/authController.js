@@ -27,33 +27,24 @@ exports.register = async (req, res) => {
       return res.status(400).json({ error: "Phone number already taken" });
     }
 
-    // 4. Create restaurant automatically
-    const restaurant = await Restaurant.create({
-      name: `${name}'s Restaurant`,
-      location: "",
-      address: "",
-      phone,
-    });
-
-    // 5. Hash password
+    // 4. Hash password
     const hashed = await bcrypt.hash(password, 10);
 
-    // 6. Generate verification token
+    // 5. Generate verification token
     const verificationToken = crypto.randomBytes(32).toString("hex");
 
-    // 7. Create user (not verified yet)
+    // 6. Create user (not verified yet) - NO restaurant creation
     const user = await User.create({
       name,
       email,
       phone,
       password: hashed,
       roleId: ownerRole.id,
-      restaurantId: restaurant.id,
       verificationToken,
       isVerified: false,
     });
 
-    // 8. Send email with token
+    // 7. Send email with token
     await sendVerificationEmail(email, verificationToken);
 
     res.status(201).json({
@@ -61,7 +52,6 @@ exports.register = async (req, res) => {
       user: {
         id: user.id,
         email: user.email,
-        restaurantId: restaurant.id,
         roleName: "owner",
       },
     });
@@ -131,7 +121,6 @@ exports.login = async (req, res) => {
         name: user.name,
         phone: user.phone,
         email: user.email,
-        restaurantId: user.restaurantId,
         roleName: user.role.roleName,
       },
     });
@@ -172,8 +161,8 @@ exports.me = async (req, res) => {
         },
         {
           model: Restaurant,
-          as: "restaurant",
-          attributes: ["id", "name", "location", "address", "phone"]
+          as: "restaurants",
+          attributes: ["id", "name", "location", "address", "phone", "logo"]
         }
       ]
     });
@@ -188,7 +177,7 @@ exports.me = async (req, res) => {
       email: user.email,
       phone: user.phone,
       role: user.role.roleName,
-      restaurant: user.restaurant
+      restaurants: user.restaurants
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
