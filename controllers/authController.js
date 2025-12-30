@@ -110,7 +110,7 @@ exports.login = async (req, res) => {
         phone: user.phone,
         roleName: user.role.roleName,
       },
-      process.env.JWT_SECRET,
+      "mysecretkey",
       { expiresIn: "7d" }
     );
 
