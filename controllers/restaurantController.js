@@ -1,16 +1,17 @@
 const { Restaurant, User, Role } = require('../models');
 const { sequelize } = require('../models');
-const restaurant = require('../models/restaurant');
 
 // GET all restaurants
 exports.getAllRestaurants = async (req, res) => {
   try {
     const restaurants = await Restaurant.findAll({
+      limit: 50,
+      offset: 0,
       include: [{ model: User, as: 'owner', attributes: ['id', 'name', 'email'] }],
     });
-    res.status(200).json(restaurants);
+    return res.status(200).json(restaurants);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching restaurants', error: err.message });
+    return res.status(500).json({ message: 'Error fetching restaurants', error: err.message });
   }
 };
 
@@ -41,7 +42,7 @@ exports.createRestaurant = async (req, res) => {
 
   } catch (err) {
     await t.rollback();
-    res.status(500).json({ message: 'Error creating restaurant', error: err.message });
+    return res.status(500).json({ message: 'Error creating restaurant', error: err.message });
   }
 };
 
@@ -73,7 +74,7 @@ exports.getRestaurantById = async (req, res) => {
 
     return res.json({ restaurant });
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching restaurant', error: err.message });
+    return res.status(500).json({ message: 'Error fetching restaurant', error: err.message });
   }
 };
 
@@ -99,7 +100,7 @@ exports.getStaff = async (req, res) => {
     return res.json({ staff });
 
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching staff', error: err.message });
+    return res.status(500).json({ message: 'Error fetching staff', error: err.message });
   }
 };
 
@@ -125,10 +126,10 @@ exports.updateRestaurant = async (req, res) => {
 
     await restaurant.save();
 
-    res.status(200).json({ message: 'Restaurant updated', restaurant });
+    return res.status(200).json({ message: 'Restaurant updated', restaurant });
 
   } catch (err) {
-    res.status(500).json({ message: 'Error updating restaurant', error: err.message });
+    return res.status(500).json({ message: 'Error updating restaurant', error: err.message });
   }
 };
 
@@ -150,7 +151,7 @@ exports.deleteRestaurant = async (req, res) => {
     return res.status(200).json({ message: 'Restaurant deleted successfully' });
 
   } catch (err) {
-    res.status(500).json({ message: 'Error deleting restaurant', error: err.message });
+    return res.status(500).json({ message: 'Error deleting restaurant', error: err.message });
   }
 };
 
@@ -187,7 +188,7 @@ exports.updateRestaurantSettings = async (req, res) => {
       isServiceChargeEnabled,
     });
 
-    res.json({
+    return res.json({
       message: 'Restaurant settings updated successfully',
       restaurantId: restaurant.id,
       settings: {
@@ -199,7 +200,7 @@ exports.updateRestaurantSettings = async (req, res) => {
     });
 
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 

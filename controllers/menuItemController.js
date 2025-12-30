@@ -18,9 +18,9 @@ exports.getAllMenuItems = async (req, res) => {
       order: [["sortOrder", "ASC"]],
     });
 
-    res.json({ items });
+    return res.json({ items });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -29,9 +29,9 @@ exports.getMenuItemById = async (req, res) => {
   try {
     const item = await MenuItem.findByPk(req.params.id, { include: MenuCategory });
     if (!item) return res.status(404).json({ message: 'Menu item not found' });
-    res.status(200).json(item);
+    return res.status(200).json(item);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching menu item', error: err });
+    return res.status(500).json({ message: 'Error fetching menu item', error: err });
   }
 };
 
@@ -78,9 +78,9 @@ exports.createMenuItem = async (req, res) => {
       isActive
     });
 
-    res.status(201).json(item);
+    return res.status(201).json(item);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -107,9 +107,9 @@ exports.updateMenuItem = async (req, res) => {
 
     const { name, description, foodType, price, imageUrl, categoryId, isActive } = req.body;
     await item.update({ name, description, foodType, price , imageUrl, categoryId, isActive});
-    res.json(item);
+    return res.json(item);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 exports.updateMenuCategory = async (req, res) => {
@@ -130,9 +130,9 @@ exports.updateMenuCategory = async (req, res) => {
     const { name, isActive } = req.body;
     await category.update({ name, isActive });
 
-    res.json(category);
+    return res.json(category);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -157,8 +157,8 @@ exports.deleteMenuItem = async (req, res) => {
       return res.status(404).json({ message: "Menu item not found" });
     }
 
-    res.json({ message: "Menu item deleted" });
+    return res.json({ message: "Menu item deleted" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };

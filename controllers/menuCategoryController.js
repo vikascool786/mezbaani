@@ -20,9 +20,9 @@ exports.getAllMenuCategories = async (req, res) => {
       order: [['createdAt', 'ASC']],
     });
 
-    res.json({ categories });
+    return res.json({ categories });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -43,9 +43,9 @@ exports.getMenuCategoryById = async (req, res) => {
       return res.status(403).json({ message: 'Unauthorized access' });
     }
 
-    res.json(category);
+    return res.json(category);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -75,9 +75,9 @@ exports.createMenuCategory = async (req, res) => {
       restaurantId: restaurant.id,
     });
 
-    res.status(201).json(category);
+    return res.status(201).json(category);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -100,9 +100,9 @@ exports.updateMenuCategory = async (req, res) => {
     const { name, isActive } = req.body;
     await category.update({ name, isActive });
 
-    res.json(category);
+    return res.json(category);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -124,8 +124,8 @@ exports.deleteMenuCategory = async (req, res) => {
     }
 
     await category.destroy(); // later we can switch to soft delete
-    res.json({ message: 'Category deleted successfully' });
+    return res.json({ message: 'Category deleted successfully' });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };

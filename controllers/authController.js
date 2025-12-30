@@ -47,7 +47,7 @@ exports.register = async (req, res) => {
     // 7. Send email with token
     await sendVerificationEmail(email, verificationToken);
 
-    res.status(201).json({
+    return res.status(201).json({
       msg: "Account created. Please check your email to verify your account.",
       user: {
         id: user.id,
@@ -57,7 +57,7 @@ exports.register = async (req, res) => {
     });
 
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -72,9 +72,9 @@ exports.verifyEmail = async (req, res) => {
     user.isVerified = true;
     await user.save();
 
-    res.json({ message: "Email verified successfully. You can now log in." });
+    return res.json({ message: "Email verified successfully. You can now log in." });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -125,7 +125,6 @@ exports.login = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Login Error:", err);
     return res.status(500).json({ error: "Server error" + err, message: err.message });
   }
 };
@@ -138,14 +137,14 @@ exports.getUser = async (req, res) => {
 
     if (!user) return res.status(404).json({ msg: "User not found" });
 
-    res.json({
+    return res.json({
       id: user.id,
       email: user.email,
       phone: user.phone,
       roleName: user.role.roleName,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -171,7 +170,7 @@ exports.me = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    res.json({
+    return res.json({
       id: user.id,
       name: user.name,
       email: user.email,
@@ -180,7 +179,7 @@ exports.me = async (req, res) => {
       restaurants: user.restaurants
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 

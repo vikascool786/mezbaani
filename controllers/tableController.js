@@ -10,9 +10,9 @@ exports.getAllTables = async (req, res) => {
       order: [['createdAt', 'ASC']],
     });
 
-    res.json({ tables });
+    return res.json({ tables });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -32,9 +32,9 @@ exports.getTableById = async (req, res) => {
       return res.status(404).json({ message: "Table not found" });
     }
 
-    res.json(table);
+    return res.json(table);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -117,9 +117,9 @@ exports.updateTable = async (req, res) => {
       seats,
     });
 
-    res.json(table);
+    return res.json(table);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -156,10 +156,10 @@ exports.deleteTable = async (req, res) => {
     // 🗑 Step 3: Delete
     await table.destroy();
 
-    res.status(200).json({ message: "Table deleted successfully" });
+    return res.status(200).json({ message: "Table deleted successfully" });
 
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       message: "Error deleting table",
       error: err.message,
     });
