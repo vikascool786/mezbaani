@@ -2,6 +2,7 @@
 
 # dependencies
 config/db.js
+index.js
 .env
 .env.local
 node_modules
