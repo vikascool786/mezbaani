@@ -403,14 +403,18 @@ exports.printKot = async (req, res) => {
   const { id } = req.params;
   const { items } = req.body;
 
+  const t = await sequelize.transaction();
+
   try {
     const order = await Order.findByPk(id);
 
     if (!order) {
+      await t.rollback();
       return res.status(404).json({ message: 'Order not found' });
     }
 
     if (order.status === 'CLOSED') {
+      await t.rollback();
       return res.status(400).json({ message: 'Cannot print KOT for closed order' });
     }
 
@@ -422,6 +426,7 @@ exports.printKot = async (req, res) => {
           orderId: id,
           menuItemId: item.menuItemId,
         },
+        transaction: t,
       });
 
       if (!orderItem) continue;
@@ -434,13 +439,14 @@ exports.printKot = async (req, res) => {
       }
 
       if (item.quantity > pendingQty) {
+        await t.rollback();
         return res.status(400).json({
           message: `KOT quantity exceeds pending qty for menuItem ${item.menuItemId}`,
         });
       }
 
       orderItem.quantityPrinted += item.quantity;
-      await orderItem.save();
+      await orderItem.save({ transaction: t });
 
       updatedItems.push({
         menuItemId: orderItem.menuItemId,
@@ -450,6 +456,8 @@ exports.printKot = async (req, res) => {
       });
     }
 
+    await t.commit();
+
     return res.json({
       message: 'KOT printed successfully',
       orderId: id,
@@ -457,6 +465,7 @@ exports.printKot = async (req, res) => {
     });
 
   } catch (err) {
+    await t.rollback();
     res.status(500).json({
       message: 'Failed to print KOT',
       error: err.message,

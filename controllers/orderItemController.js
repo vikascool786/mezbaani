@@ -1,4 +1,4 @@
-const { OrderItem, Order, MenuItem, sequelize } = require('../models');
+const { Restaurant, OrderItem, Order, MenuItem, sequelize } = require('../models');
 
 // GET all order items
 exports.getAllOrderItems = async (req, res) => {
@@ -138,6 +138,50 @@ exports.updateOrderItemStatus = async (req, res) => {
 
     await orderItem.save();
 
+    // RE-CALCULATE ORDER BILLING BASED ON CANCELLED ITEM
+    const order = await Order.findByPk(orderId);
+    const restaurant = await Restaurant.findByPk(order.restaurantId);
+
+    const items = await OrderItem.findAll({
+      where: { orderId },
+      include: [{ model: MenuItem }],
+    });
+
+    let subtotal = 0;
+
+    for (const item of items) {
+      const chargeableQty =
+        item.quantity - item.quantityCancelled;
+
+      subtotal +=
+        Number(item.MenuItem.price) * chargeableQty;
+    }
+
+    // Service charge
+    let serviceCharge = 0;
+    if (restaurant.isServiceChargeEnabled) {
+      serviceCharge =
+        (subtotal * Number(restaurant.serviceChargePercent || 0)) / 100;
+    }
+
+    // GST
+    let taxAmount = 0;
+    if (restaurant.isGstEnabled) {
+      taxAmount =
+        ((subtotal + serviceCharge) *
+          Number(restaurant.gstPercent || 0)) /
+        100;
+    }
+
+    const total = subtotal + serviceCharge + taxAmount;
+
+    await order.update({
+      subtotal,
+      serviceCharge,
+      taxAmount,
+      total,
+    });
+
     return res.json({
       message: 'Order item quantities updated successfully',
       data: {
@@ -148,6 +192,12 @@ exports.updateOrderItemStatus = async (req, res) => {
         remainingQty:
           orderedQty -
           (orderItem.quantityServed + orderItem.quantityCancelled),
+        billing: {
+          subtotal,
+          serviceCharge,
+          taxAmount,
+          total,
+        },
       },
     });
   } catch (error) {

@@ -45,6 +45,7 @@ exports.createMenuItem = async (req, res) => {
       foodType,
       imageUrl,
       categoryId,
+      isActive
     } = req.body;
 
     const restaurant = await Restaurant.findOne({
@@ -74,6 +75,7 @@ exports.createMenuItem = async (req, res) => {
       imageUrl,
       categoryId,
       restaurantId: restaurant.id,
+      isActive
     });
 
     res.status(201).json(item);
@@ -103,8 +105,8 @@ exports.updateMenuItem = async (req, res) => {
       return res.status(404).json({ message: "Menu item not found" });
     }
 
-    const { name, description, foodType, price, imageUrl } = req.body;
-    await item.update({ name, description, foodType, price , imageUrl});
+    const { name, description, foodType, price, imageUrl, categoryId, isActive } = req.body;
+    await item.update({ name, description, foodType, price , imageUrl, categoryId, isActive});
     res.json(item);
   } catch (err) {
     res.status(500).json({ message: err.message });

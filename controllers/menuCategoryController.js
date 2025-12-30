@@ -15,7 +15,7 @@ exports.getAllMenuCategories = async (req, res) => {
     const categories = await MenuCategory.findAll({
       where: {
         restaurantId: restaurant.id,
-        isActive: true,
+        // isActive: true,
       },
       order: [['createdAt', 'ASC']],
     });
