@@ -1,3 +1,4 @@
+require('dotenv').config();
 const jwt = require("jsonwebtoken");
 const { User, Role } = require("../models");
 
@@ -11,7 +12,7 @@ exports.authenticateToken = async (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, "mysecretkey");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findByPk(decoded.id, {
       include: [{ model: Role, as: "role" }],

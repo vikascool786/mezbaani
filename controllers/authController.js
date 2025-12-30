@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { User, Role, Restaurant } = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -110,7 +111,7 @@ exports.login = async (req, res) => {
         phone: user.phone,
         roleName: user.role.roleName,
       },
-      "mysecretkey",
+      process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
