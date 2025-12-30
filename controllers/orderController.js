@@ -34,9 +34,9 @@ exports.getAllOrders = async (req, res) => {
       })
     );
 
-    res.json(response);
+    return res.json(response);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -59,7 +59,7 @@ exports.getOrderById = async (req, res) => {
       include: [{ model: MenuItem }],
     });
 
-    res.json({
+    return res.json({
       ...order.toJSON(),
       items: items.map(i => ({
         menuItemId: i.menuItemId,
@@ -73,7 +73,7 @@ exports.getOrderById = async (req, res) => {
       })),
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -131,9 +131,9 @@ exports.getActiveOrders = async (req, res) => {
       };
     });
 
-    res.json(response);
+    return res.json(response);
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Failed to fetch active orders',
       error: error.message,
     });
@@ -259,11 +259,11 @@ exports.createOrder = async (req, res) => {
 
     await t.commit();
 
-    res.status(201).json(order);
+    return res.status(201).json(order);
 
   } catch (err) {
     await t.rollback();
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -297,7 +297,7 @@ exports.getKotPreview = async (req, res) => {
     })
     .filter(Boolean);
 
-  res.json({
+  return res.json({
     orderId: id,
     kotItems,
   });
@@ -382,7 +382,7 @@ exports.updateOrder = async (req, res) => {
       total,
     });
 
-    res.json({
+    return res.json({
       message: 'Order updated successfully',
       billing: {
         subtotal,
@@ -394,7 +394,7 @@ exports.updateOrder = async (req, res) => {
     });
 
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -466,7 +466,7 @@ exports.printKot = async (req, res) => {
 
   } catch (err) {
     await t.rollback();
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Failed to print KOT',
       error: err.message,
     });
@@ -530,7 +530,7 @@ exports.applyDiscount = async (req, res) => {
       total,
     });
 
-    res.json({
+    return res.json({
       message: 'Discount applied successfully',
       orderId: order.id,
       subtotal,
@@ -541,7 +541,7 @@ exports.applyDiscount = async (req, res) => {
     });
 
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Failed to apply discount',
       error: err.message,
     });
@@ -557,7 +557,7 @@ exports.deleteOrder = async (req, res) => {
   if (!order) return res.status(404).json({ message: 'Order not found' });
 
   await order.destroy();
-  res.json({ message: 'Order deleted' });
+  return res.json({ message: 'Order deleted' });
 };
 
 /**
@@ -580,7 +580,7 @@ exports.getOrderByTableId = async (req, res) => {
       include: [{ model: MenuItem }],
     });
 
-    res.json({
+    return res.json({
       ...order.toJSON(),
       items: items.map(i => ({
         menuItemId: i.menuItemId,
@@ -592,7 +592,7 @@ exports.getOrderByTableId = async (req, res) => {
       })),
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -633,7 +633,7 @@ exports.getBillPreview = async (req, res) => {
         Number(item.MenuItem.price),
     }));
 
-    res.json({
+    return res.json({
       orderId: order.id,
       tableId: order.tableId,
       orderNumber: order.orderNumber,
@@ -645,7 +645,6 @@ exports.getBillPreview = async (req, res) => {
       items,
     });
   } catch (err) {
-    console.error('Bill preview error:', err);
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };

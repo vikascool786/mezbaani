@@ -4,9 +4,9 @@ const { Restaurant, OrderItem, Order, MenuItem, sequelize } = require('../models
 exports.getAllOrderItems = async (req, res) => {
   try {
     const items = await OrderItem.findAll({ include: [Order, MenuItem] });
-    res.status(200).json(items);
+    return res.status(200).json(items);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching order items', error: err });
+    return res.status(500).json({ message: 'Error fetching order items', error: err });
   }
 };
 
@@ -15,9 +15,9 @@ exports.getOrderItemById = async (req, res) => {
   try {
     const item = await OrderItem.findByPk(req.params.id, { include: [Order, MenuItem] });
     if (!item) return res.status(404).json({ message: 'Order item not found' });
-    res.status(200).json(item);
+    return res.status(200).json(item);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching order item', error: err });
+    return res.status(500).json({ message: 'Error fetching order item', error: err });
   }
 };
 
@@ -74,21 +74,6 @@ exports.createOrderItems = async (req, res) => {
   }
 };
 
-// UPDATE order item
-// exports.updateOrderItem = async (req, res) => {
-//   try {
-//     const { quantity, price, status } = req.body;
-
-//     const item = await OrderItem.findByPk(req.params.id);
-//     if (!item) return res.status(404).json({ message: 'Order item not found' });
-
-//     await item.update({ quantity, price, status });
-//     res.status(200).json(item);
-//   } catch (err) {
-//     res.status(500).json({ message: 'Error updating order item', error: err });
-//   }
-// };
-
 // UPDATE order item status
 exports.updateOrderItemStatus = async (req, res) => {
   const { orderId, menuItemId } = req.params;
@@ -117,14 +102,14 @@ exports.updateOrderItemStatus = async (req, res) => {
     const remainingQty =
       orderedQty - (currentServed + currentCancelled);
 
-    // ❌ Invalid serve/cancel
+    // Invalid serve/cancel
     if (quantityServed + quantityCancelled > remainingQty) {
       return res.status(400).json({
         message: 'Served + Cancelled exceeds remaining quantity',
       });
     }
 
-    // ❌ Printed qty cannot exceed ordered qty
+    // Printed qty cannot exceed ordered qty
     if (currentPrinted + quantityPrinted > orderedQty) {
       return res.status(400).json({
         message: 'Printed quantity exceeds ordered quantity',
@@ -217,8 +202,8 @@ exports.deleteOrderItem = async (req, res) => {
     if (!item) return res.status(404).json({ message: 'Order item not found' });
 
     await item.destroy();
-    res.status(200).json({ message: 'Order item deleted successfully' });
+    return res.status(200).json({ message: 'Order item deleted successfully' });
   } catch (err) {
-    res.status(500).json({ message: 'Error deleting order item', error: err });
+    return res.status(500).json({ message: 'Error deleting order item', error: err });
   }
 };
