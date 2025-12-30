@@ -8,7 +8,7 @@ const { sequelize } = require('./models');
 const routes = require('./routes');
 
 const app = express();
-const PORT = process.env.PORT || 5003;
+const PORT = process.env.APP_PORT || 5003;
 
 app.use(cors());
 app.use(express.json());
