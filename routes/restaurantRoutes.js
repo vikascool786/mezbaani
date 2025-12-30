@@ -10,7 +10,7 @@ router.get('/', authenticateToken, restaurantController.getAllRestaurants);
 router.post(
   '/',
   authenticateToken,
-  authorizeRole(['owner']),
+  authorizeRole(['owner', 'admin']),
   restaurantController.createRestaurant
 );
 
