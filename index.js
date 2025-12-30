@@ -1,9 +1,6 @@
 const path = require("path");
 
-// MUST be first lines in the file
-require("dotenv").config({
-  path: path.resolve(__dirname, ".env"),
-});
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 
 const express = require('express');
 const cors = require('cors');
