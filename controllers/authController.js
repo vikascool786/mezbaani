@@ -111,7 +111,7 @@ exports.login = async (req, res) => {
         phone: user.phone,
         roleName: user.role.roleName,
       },
-      process.env.JWT_SECRET,
+      (process.env.JWT_SECRET || 'sesssecret'),
       { expiresIn: "7d" }
     );
 
